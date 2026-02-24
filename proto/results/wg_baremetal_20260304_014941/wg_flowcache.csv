@@ -1,0 +1,3 @@
+workload,hits,misses,inserts,hit_rate_pct
+many_short_flows,3000,1000,1000,75.00
+few_long_flows,650908,4,4,100.00

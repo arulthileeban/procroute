@@ -1,0 +1,6 @@
+config,metric,p50_us,p95_us,p99_us,mean_us
+wg_baseline,tcp_connect,89.83,98.72,100.93,89.60
+wg_nftables,tcp_connect,97.28,100.61,101.87,95.28
+wg_tag_only,tcp_connect,90.31,98.41,100.54,89.53
+wg_enforce_nocache,tcp_connect,93.42,98.97,100.67,91.87
+wg_enforce_cache,tcp_connect,93.69,101.22,102.30,92.83

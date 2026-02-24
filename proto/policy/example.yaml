@@ -1,0 +1,90 @@
+# ProcRoute policy -- example configuration
+# Semantics:
+#   Any process connecting to an internal_prefix is DENIED unless an
+#   application rule below explicitly allows it.  Connections to
+#   destinations outside internal_prefixes are unaffected (normal
+#   split-tunnel Internet access).
+
+version: 1
+
+# Ports exempt from gateway enforcement (control-plane bypass).
+# Traffic to these ports passes through even without app tags.
+exempt_ports:
+  - 19999    # eval barrier sync
+
+# Protected corporate route set.  Every CIDR here is default-deny.
+internal_prefixes:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - fd00::/8            # ULA IPv6
+
+applications:
+
+  # Browser: can reach 10.0.0.0/8 on port 443 only
+  #
+  # This grants the corporate browser HTTPS access to the 10.x
+  # network but blocks it from every other internal prefix and
+  # every other port (SSH, RDP, databases, etc.).
+  #
+  #   Allowed:  curl https://10.1.2.3        (allowed)  (tcp/443)
+  #   Denied:   curl http://10.1.2.3         (denied)  (tcp/80, not in ports)
+  #   Denied:   ssh  10.1.2.3                (denied)  (tcp/22, not in ports)
+  #   Denied:   curl https://172.16.0.1      (denied)  (prefix not in allow)
+  #   Allowed:  curl https://example.com     (allowed)  (not an internal prefix)
+  #
+  - app_id: corp-browser
+    match:
+      cgroup: /system.slice/corp-browser.service
+      exec_hash: sha256:a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+        ports: [443]
+        protocol: tcp
+
+  # VPN client: full access to all internal prefixes
+  - app_id: vpn-client
+    match:
+      cgroup: /system.slice/vpn-client.service
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - fd00::/8
+
+  # SSH client: TCP/22 to a narrow admin subnet
+  - app_id: ssh-client
+    match:
+      cgroup: /user.slice/user-1000.slice/app-ssh.scope/*
+    allow:
+      - prefixes:
+          - 10.250.0.0/16
+        ports: [22]
+        protocol: tcp
+
+  # IDE: HTTPS + a custom dev-server port range
+  - app_id: corp-ide
+    match:
+      cgroup: /user.slice/user-1000.slice/app-ide.scope/*
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+        ports: [443]
+        protocol: tcp
+      - prefixes:
+          - 10.100.0.0/16
+        ports: ["8000-8099"]
+        protocol: tcp
+
+  # Internal DNS resolver: UDP/53 to DNS VIPs only
+  - app_id: internal-dns
+    match:
+      cgroup: /system.slice/resolved.service
+    allow:
+      - prefixes:
+          - 10.0.0.53/32
+          - 10.0.1.53/32
+        ports: [53]
+        protocol: udp

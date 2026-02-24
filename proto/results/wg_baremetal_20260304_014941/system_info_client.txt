@@ -1,0 +1,56 @@
+=== WireGuard Bare-Metal Evaluation System Info (client) ===
+Date: 2026-03-04 02:33:39 UTC
+
+=== Kernel ===
+Linux finer-anemone 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+
+=== CPU ===
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           48 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  16
+On-line CPU(s) list:                     0-15
+Vendor ID:                               AuthenticAMD
+BIOS Vendor ID:                          Advanced Micro Devices, Inc.
+Model name:                              AMD Ryzen 7 7700X 8-Core Processor
+BIOS Model name:                         AMD Ryzen 7 7700X 8-Core Processor              Unknown CPU @ 4.5GHz
+BIOS CPU family:                         107
+CPU family:                              25
+Model:                                   97
+Thread(s) per core:                      2
+Core(s) per socket:                      8
+Socket(s):                               1
+Stepping:                                2
+Frequency boost:                         enabled
+CPU(s) scaling MHz:                      62%
+CPU max MHz:                             5575.0000
+
+=== Memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            61Gi       1.2Gi        59Gi        20Mi       2.3Gi        60Gi
+Swap:          8.0Gi          0B       8.0Gi
+
+=== WireGuard ===
+wireguard-tools v1.0.20210914 - https://git.zx2c4.com/wireguard-tools/
+
+=== WireGuard Interface ===
+interface: wg0
+  public key: n/Sg4+y4lSfZPTLtOxyL8e54W0T6xr33UlBFSdP8g2o=
+  private key: (hidden)
+  listening port: 42661
+
+peer: WJzxb3g24eQ7MnlNpqcb6eWgE71CcPiWiQNa9WjFfEE=
+  endpoint: 84.32.70.100:51820
+  allowed ips: fd00::/8
+  latest handshake: 44 seconds ago
+  transfer: 59.61 GiB received, 4.75 TiB sent
+  persistent keepalive: every 25 seconds
+
+=== CPU governor ===
+powersave
+
+=== Virtualization ===
+none
+(not available)
+

@@ -1,0 +1,75 @@
+# ProcRoute policy -- benchmark configuration
+# Identical to example.yaml but with all exec_hash lines removed
+# so benchmark scripts (python3) are not blocked by hash verification.
+# Semantics:
+#   Any process connecting to an internal_prefix is DENIED unless an
+#   application rule below explicitly allows it.  Connections to
+#   destinations outside internal_prefixes are unaffected (normal
+#   split-tunnel Internet access).
+
+version: 1
+
+# Protected corporate route set.  Every CIDR here is default-deny.
+internal_prefixes:
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - fd00::/8            # ULA IPv6
+
+applications:
+
+  # Browser: can reach 10.0.0.0/8 on port 443 only
+  - app_id: corp-browser
+    match:
+      cgroup: /system.slice/corp-browser.service
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+        ports: [443]
+        protocol: tcp
+
+  # VPN client: full access to all internal prefixes
+  - app_id: vpn-client
+    match:
+      cgroup: /system.slice/vpn-client.service
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - fd00::/8
+
+  # SSH client: TCP/22 to a narrow admin subnet
+  - app_id: ssh-client
+    match:
+      cgroup: /user.slice/user-1000.slice/app-ssh.scope/*
+    allow:
+      - prefixes:
+          - 10.250.0.0/16
+        ports: [22]
+        protocol: tcp
+
+  # IDE: HTTPS + a custom dev-server port range
+  - app_id: corp-ide
+    match:
+      cgroup: /user.slice/user-1000.slice/app-ide.scope/*
+    allow:
+      - prefixes:
+          - 10.0.0.0/8
+        ports: [443]
+        protocol: tcp
+      - prefixes:
+          - 10.100.0.0/16
+        ports: ["8000-8099"]
+        protocol: tcp
+
+  # Internal DNS resolver: UDP/53 to DNS VIPs only
+  - app_id: internal-dns
+    match:
+      cgroup: /system.slice/resolved.service
+    allow:
+      - prefixes:
+          - 10.0.0.53/32
+          - 10.0.1.53/32
+        ports: [53]
+        protocol: udp

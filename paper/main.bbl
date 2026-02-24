@@ -1,0 +1,257 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{20}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Anderson et~al\mbox{.}(2010)]%
+        {capsicum}
+\bibfield{author}{\bibinfo{person}{Jonathan Anderson}, \bibinfo{person}{Robert
+  N.~M. Watson}, {and} \bibinfo{person}{Kris Kennaway}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Capsicum: Practical Capabilities for {UNIX}}. In
+  \bibinfo{booktitle}{\emph{Proc.\ 19th USENIX Security Symposium}}.
+  \bibinfo{pages}{29--45}.
+\newblock
+
+
+\bibitem[{Canonical Ltd.}(2024)]%
+        {apparmor}
+\bibfield{author}{\bibinfo{person}{{Canonical Ltd.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{{AppArmor}}.
+\newblock \bibinfo{howpublished}{\url{https://apparmor.net}}.
+\newblock
+
+
+\bibitem[{Isovalent}(2024a)]%
+        {cilium}
+\bibfield{author}{\bibinfo{person}{{Isovalent}}.}
+  \bibinfo{year}{2024}\natexlab{a}.
+\newblock \bibinfo{title}{Cilium: {eBPF}-based Networking, Observability, and
+  Security}.
+\newblock \bibinfo{howpublished}{\url{https://cilium.io}}.
+\newblock
+
+
+\bibitem[{Isovalent}(2024b)]%
+        {tetragon}
+\bibfield{author}{\bibinfo{person}{{Isovalent}}.}
+  \bibinfo{year}{2024}\natexlab{b}.
+\newblock \bibinfo{title}{Tetragon: {eBPF}-based Security Observability and
+  Runtime Enforcement}.
+\newblock \bibinfo{howpublished}{\url{https://tetragon.io}}.
+\newblock
+
+
+\bibitem[{Joint Task Force}(2020)]%
+        {nist_sp80053r5}
+\bibfield{author}{\bibinfo{person}{{Joint Task Force}}.}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Security and Privacy Controls for
+  Information Systems and Organizations}}.
+\newblock \bibinfo{type}{{T}echnical {R}eport} SP 800-53 Rev.\ 5.
+  \bibinfo{institution}{NIST}.
+\newblock
+\href{https://doi.org/10.6028/NIST.SP.800-53r5}{doi:\nolinkurl{10.6028/NIST.SP.800-53r5}}
+
+
+\bibitem[Loscocco and Smalley(2001)]%
+        {selinux}
+\bibfield{author}{\bibinfo{person}{Peter Loscocco} {and}
+  \bibinfo{person}{Stephen Smalley}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Integrating Flexible Support for Security Policies
+  into the {Linux} Operating System}. In \bibinfo{booktitle}{\emph{Proc.\
+  USENIX Annual Technical Conference (FREENIX Track)}}.
+  \bibinfo{pages}{29--42}.
+\newblock
+
+
+\bibitem[{MITRE}(2024)]%
+        {mitre_lateral}
+\bibfield{author}{\bibinfo{person}{{MITRE}}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Lateral Movement -- {MITRE ATT\&CK}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://attack.mitre.org/tactics/TA0008/}}.
+\newblock
+
+
+\bibitem[{National Institute of Standards and Technology}(2016)]%
+        {nist_sp80046r2}
+\bibfield{author}{\bibinfo{person}{{National Institute of Standards and
+  Technology}}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Guide to Enterprise Telework, Remote
+  Access, and Bring Your Own Device (BYOD) Security}}.
+\newblock \bibinfo{type}{{T}echnical {R}eport} SP 800-46 Rev.\ 2.
+  \bibinfo{institution}{NIST}.
+\newblock
+\href{https://doi.org/10.6028/NIST.SP.800-46r2}{doi:\nolinkurl{10.6028/NIST.SP.800-46r2}}
+
+
+\bibitem[{National Security Agency} and {Cybersecurity and Infrastructure
+  Security Agency}(2021)]%
+        {nsa_cisa_vpn}
+\bibfield{author}{\bibinfo{person}{{National Security Agency}} {and}
+  \bibinfo{person}{{Cybersecurity and Infrastructure Security Agency}}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Selecting and Hardening Remote Access {VPN}
+  Solutions}}.
+\newblock \bibinfo{type}{{T}echnical {R}eport}.
+  \bibinfo{institution}{NSA/CISA}.
+\newblock
+\newblock
+\shownote{U/OO/184997-21}.
+
+
+\bibitem[{netfilter project}(2024)]%
+        {nftables_wiki_cgroups}
+\bibfield{author}{\bibinfo{person}{{netfilter project}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Matching packet metainformation --- nftables wiki}.
+\newblock
+  \bibinfo{howpublished}{\url{https://wiki.nftables.org/wiki-nftables/index.php/Matching_packet_metainformation}}.
+\newblock
+
+
+\bibitem[Rose et~al\mbox{.}(2020)]%
+        {nist_sp80020r1}
+\bibfield{author}{\bibinfo{person}{Scott Rose}, \bibinfo{person}{Oliver
+  Borchert}, \bibinfo{person}{Stu Mitchell}, {and} \bibinfo{person}{Sean
+  Connelly}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Zero Trust Architecture}}.
+\newblock \bibinfo{type}{{T}echnical {R}eport} SP 800-207.
+  \bibinfo{institution}{NIST}.
+\newblock
+\href{https://doi.org/10.6028/NIST.SP.800-207}{doi:\nolinkurl{10.6028/NIST.SP.800-207}}
+
+
+\bibitem[Sala\"{u}n(2017)]%
+        {landlock}
+\bibfield{author}{\bibinfo{person}{Micka\"{e}l Sala\"{u}n}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Landlock: Unprivileged Access Control}. In
+  \bibinfo{booktitle}{\emph{Proc.\ Linux Security Summit}}.
+\newblock
+
+
+\bibitem[{systemd project}(2024)]%
+        {systemd_resource_control}
+\bibfield{author}{\bibinfo{person}{{systemd project}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{systemd.resource-control --- Resource Control Unit
+  Settings}.
+\newblock
+  \bibinfo{howpublished}{\url{https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html}}.
+\newblock
+\newblock
+\shownote{Documents \texttt{IPAddressAllow=} and \texttt{IPAddressDeny=}
+  directives; available since systemd~235}.
+
+
+\bibitem[{The Linux Kernel Documentation}(2024a)]%
+        {kernel_bpf_cgroup}
+\bibfield{author}{\bibinfo{person}{{The Linux Kernel Documentation}}.}
+  \bibinfo{year}{2024}\natexlab{a}.
+\newblock \bibinfo{title}{{BPF} cgroup Programs}.
+\newblock \bibinfo{howpublished}{\url{https://docs.kernel.org/bpf/}}.
+\newblock
+
+
+\bibitem[{The Linux Kernel Documentation}(2024b)]%
+        {kernel_cgroup2}
+\bibfield{author}{\bibinfo{person}{{The Linux Kernel Documentation}}.}
+  \bibinfo{year}{2024}\natexlab{b}.
+\newblock \bibinfo{title}{Control Group v2}.
+\newblock
+  \bibinfo{howpublished}{\url{https://docs.kernel.org/admin-guide/cgroup-v2.html}}.
+\newblock
+
+
+\bibitem[{The Linux Kernel Documentation}(2024c)]%
+        {kernel_cgroup2_delegation}
+\bibfield{author}{\bibinfo{person}{{The Linux Kernel Documentation}}.}
+  \bibinfo{year}{2024}\natexlab{c}.
+\newblock \bibinfo{title}{Control Group v2 --- Delegation}.
+\newblock
+  \bibinfo{howpublished}{\url{https://docs.kernel.org/admin-guide/cgroup-v2.html\#delegation}}.
+\newblock
+
+
+\bibitem[{The Linux Kernel Documentation}(2024d)]%
+        {seccomp}
+\bibfield{author}{\bibinfo{person}{{The Linux Kernel Documentation}}.}
+  \bibinfo{year}{2024}\natexlab{d}.
+\newblock \bibinfo{title}{Seccomp {BPF} (SECure COMPuting with filters)}.
+\newblock
+  \bibinfo{howpublished}{\url{https://docs.kernel.org/userspace-api/seccomp_filter.html}}.
+\newblock
+
+
+\bibitem[Ward and Beyer(2014)]%
+        {beyondcorp}
+\bibfield{author}{\bibinfo{person}{Rory Ward} {and} \bibinfo{person}{Betsy
+  Beyer}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{{BeyondCorp}: A New Approach to Enterprise
+  Security}. In \bibinfo{booktitle}{\emph{;login: The USENIX Magazine}},
+  Vol.~\bibinfo{volume}{39}. \bibinfo{pages}{6--11}.
+\newblock
+
+
+\bibitem[Wool(2004)]%
+        {wool2004quantitative}
+\bibfield{author}{\bibinfo{person}{Avishai Wool}.}
+  \bibinfo{year}{2004}\natexlab{}.
+\newblock \showarticletitle{A Quantitative Study of Firewall Configuration
+  Errors}.
+\newblock \bibinfo{journal}{\emph{Computer}} \bibinfo{volume}{37},
+  \bibinfo{number}{6} (\bibinfo{year}{2004}), \bibinfo{pages}{62--67}.
+\newblock
+\href{https://doi.org/10.1109/MC.2004.2}{doi:\nolinkurl{10.1109/MC.2004.2}}
+
+
+\bibitem[Wool(2010)]%
+        {wool2010trends}
+\bibfield{author}{\bibinfo{person}{Avishai Wool}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Trends in Firewall Configuration Errors: Measuring
+  the Holes in {Swiss} Cheese}.
+\newblock \bibinfo{journal}{\emph{IEEE Internet Computing}}
+  \bibinfo{volume}{14}, \bibinfo{number}{4} (\bibinfo{year}{2010}),
+  \bibinfo{pages}{58--65}.
+\newblock
+\href{https://doi.org/10.1109/MIC.2010.29}{doi:\nolinkurl{10.1109/MIC.2010.29}}
+
+
+\end{thebibliography}

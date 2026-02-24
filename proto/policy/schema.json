@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://procroute.dev/policy/v1",
+  "title": "ProcRoute Policy",
+  "description": "Default-deny policy for process-scoped route authorization. Any connection from any process to an internal prefix is denied unless an explicit allow rule matches.",
+  "type": "object",
+  "required": ["version", "internal_prefixes", "applications"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "description": "Policy schema version."
+    },
+    "internal_prefixes": {
+      "type": "array",
+      "description": "CIDR blocks that form the protected internal route set (I). Connections to these prefixes are denied by default for all processes.",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F:.]+/[0-9]+$"
+      }
+    },
+    "applications": {
+      "type": "array",
+      "description": "Per-application allow rules. Each entry grants a matched application access to a subset of internal prefixes.",
+      "items": {
+        "$ref": "#/$defs/application"
+      }
+    }
+  },
+  "$defs": {
+    "application": {
+      "type": "object",
+      "required": ["app_id", "match", "allow"],
+      "additionalProperties": false,
+      "properties": {
+        "app_id": {
+          "type": "string",
+          "description": "Unique identifier for this application principal.",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "match": {
+          "$ref": "#/$defs/match",
+          "description": "Criteria to bind processes to this application identity."
+        },
+        "allow": {
+          "type": "array",
+          "description": "Destination rules this application is permitted to reach.",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/allow_rule"
+          }
+        }
+      }
+    },
+    "match": {
+      "type": "object",
+      "required": ["cgroup"],
+      "additionalProperties": false,
+      "properties": {
+        "cgroup": {
+          "type": "string",
+          "description": "Cgroup v2 path pattern. Exact match or glob with a trailing '/*' to match a subtree (e.g. '/system.slice/corp-browser.service' or '/user.slice/user-1000.slice/app-*.scope/*')."
+        },
+        "exec_hash": {
+          "type": "string",
+          "description": "Optional SHA-256 hex digest of the main executable. When set, the daemon verifies the hash before adding the cgroup-to-app binding. This hardens identity against binary replacement.",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "allow_rule": {
+      "type": "object",
+      "required": ["prefixes"],
+      "additionalProperties": false,
+      "properties": {
+        "prefixes": {
+          "type": "array",
+          "description": "CIDR blocks this rule grants access to. Must be subsets of internal_prefixes.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F:.]+/[0-9]+$"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "description": "Optional port allowlist. If omitted, all ports on the matched prefixes are allowed. Each entry is a single port (integer) or a 'low-high' range string.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+-[0-9]+$",
+                "description": "Inclusive port range, e.g. '8000-8099'."
+              }
+            ]
+          }
+        },
+        "protocol": {
+          "type": "string",
+          "enum": ["tcp", "udp", "any"],
+          "default": "any",
+          "description": "Transport protocol. Defaults to 'any' (both TCP and UDP)."
+        }
+      }
+    }
+  }
+}

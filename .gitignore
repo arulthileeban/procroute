@@ -1,0 +1,43 @@
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.before-*
+*.patch
+
+# Build
+proto/bpf/procroute.o
+proto/bin/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+*:Zone.Identifier
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Archives
+*.tar.gz
+
+# Generated results
+results/
+proto/baseline.tsv
+
+# Internal docs
+.claude/
+VM.md
+vm.txt
+CLAUDE.md
+PROJECT_OVERVIEW.md
+PLAN_*.md
