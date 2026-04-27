@@ -13,13 +13,18 @@ their own workloads.
 Tested on Ubuntu 22.04+ and WSL2 (kernel 6.1+). Needs root for BPF.
 
 ```bash
-sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3
+sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3 nftables
 ```
 
 Check your system:
 ```bash
 uname -r                             # >= 5.8
 mount | grep cgroup2                 # should show /sys/fs/cgroup
+```
+
+Add a loopback alias used by the latency and policy-scaling benchmarks:
+```bash
+sudo ip addr add 10.1.2.3/32 dev lo   # does not survive reboot
 ```
 
 We used a VirtualBox VM with Ubuntu 24.04 (2 CPUs, 4 GB RAM) for development.
