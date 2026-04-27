@@ -13,7 +13,7 @@ their own workloads.
 Tested on Ubuntu 22.04+ and WSL2 (kernel 6.1+). Needs root for BPF.
 
 ```bash
-sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3 nftables
+sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3 nftables wireguard-tools
 ```
 
 Check your system:
@@ -47,7 +47,18 @@ sudo ./bin/procroute launch --app corp-browser \
 
 ## Reproducing the evaluation
 
-All commands from `proto/`. Daemon should be running.
+All commands from `proto/`. Restart the daemon with the benchmark
+policy (no `exec_hash` verification, so `iperf3`/`python3` are not
+rejected):
+
+```bash
+# stop any running daemon, then start with benchmark policy
+sudo pkill procroute; sleep 1
+sudo ./bin/procroute daemon --policy policy/benchmark.yaml \
+    2>daemon.log | tee deny_events.jsonl &
+sudo ./bin/procroute launch --app corp-browser \
+    --policy policy/benchmark.yaml -- true
+```
 
 **Pivot test** (~5 min, Table 5 / App A.2):
 ```bash
@@ -69,9 +80,10 @@ Baseline p50 ~23 us, internal-allow ~26 us.
 
 **Throughput** (App A.1):
 ```bash
-sudo ./scripts/bench_throughput.sh --duration 10
+sudo ./scripts/bench_throughput.sh --duration 10 \
+    --output results/throughput.csv
 ```
-Results go to `results/throughput_*.csv`.
+Results go to `results/throughput.csv`.
 
 **Policy scaling** (App A.3, Table 6):
 ```bash
@@ -95,7 +107,7 @@ Results go to `results/nft_latency.csv` and `results/bpf_latency.csv`.
 
 Needs two machines or network namespaces:
 ```bash
-sudo ./scripts/wg_ns.sh setup
+sudo ./scripts/wg_ns.sh up
 ```
 
 Individual experiments:

@@ -5,7 +5,15 @@ CLANG      ?= clang
 GO         ?= go
 BPF_SRC    := bpf/procroute.c
 BPF_OBJ    := bpf/procroute.o
-BPF_CFLAGS := -O2 -g -Wall -Werror -target bpf -D__TARGET_ARCH_x86
+UNAME_M    := $(shell uname -m)
+ifeq ($(UNAME_M),aarch64)
+  BPF_TARGET_ARCH := -D__TARGET_ARCH_arm64
+else ifeq ($(UNAME_M),arm64)
+  BPF_TARGET_ARCH := -D__TARGET_ARCH_arm64
+else
+  BPF_TARGET_ARCH := -D__TARGET_ARCH_x86
+endif
+BPF_CFLAGS := -O2 -g -Wall -Werror -target bpf $(BPF_TARGET_ARCH)
 
 BIN        := bin/procroute
 

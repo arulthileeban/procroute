@@ -133,8 +133,10 @@ for ai, (app_id, cgroup) in enumerate(apps):
         print(f'        protocol: tcp')
 
     # Distribute the N internal prefixes as grants across apps
-    # Each app gets roughly N/5 grants
+    # Each app gets roughly N/5 grants; guarantee at least one
     app_grants = [p for j, p in enumerate(prefixes) if j % 5 == ai]
+    if not app_grants:
+        app_grants = [prefixes[0]]
     if app_grants:
         print(f'      - prefixes:')
         for g in app_grants:
@@ -235,8 +237,21 @@ for N in $SIZES; do
         # Kill any running daemon
         pkill -f "procroute daemon" 2>/dev/null || true
         sleep 0.5
-        # Clean up cgroups from previous run
-        rm -rf /sys/fs/cgroup/procroute 2>/dev/null || true
+        # Clean up cgroups from previous run: move all procs to root,
+        # then rmdir children before parent (rm -rf does not work on cgroupfs)
+        if [[ -d "$PROCROUTE_CG" ]]; then
+            for cg in "$PROCROUTE_CG"/*/; do
+                [[ -d "$cg" ]] || continue
+                while read -r pid; do
+                    echo "$pid" > /sys/fs/cgroup/cgroup.procs 2>/dev/null || true
+                done < "${cg}cgroup.procs" 2>/dev/null
+                rmdir "$cg" 2>/dev/null || true
+            done
+            while read -r pid; do
+                echo "$pid" > /sys/fs/cgroup/cgroup.procs 2>/dev/null || true
+            done < "${PROCROUTE_CG}/cgroup.procs" 2>/dev/null
+            rmdir "$PROCROUTE_CG" 2>/dev/null || true
+        fi
         sleep 0.2
 
         # Time the daemon startup until "BPF maps populated"

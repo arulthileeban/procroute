@@ -8,7 +8,7 @@
 #include "bpf_helpers.h"
 
 /*
- * BPF target is always little-endian on x86_64 (our only target).
+ * BPF target is little-endian on x86_64 and arm64.
  * Network byte order is big-endian.
  */
 #define ___bpf_swab16(x) ((__u16)(x) << 8 | (__u16)(x) >> 8)
