@@ -76,7 +76,11 @@ cleanup() {
     done
     PIDS_TO_KILL=()
     if [[ -d /sys/fs/cgroup/procroute ]]; then
+        for d in /sys/fs/cgroup/procroute/*/; do
+            [[ -d "$d" ]] || continue
             rmdir "$d" 2>/dev/null || true
+        done
+        rmdir /sys/fs/cgroup/procroute 2>/dev/null || true
     fi
     rm -rf "$LOGDIR"
 }
