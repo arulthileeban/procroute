@@ -78,7 +78,7 @@ done
 ```
 Baseline p50 ~23 us, internal-allow ~26 us.
 
-**Throughput** (App A.1):
+**Throughput** (Table 1 / App A.1):
 ```bash
 sudo ./scripts/bench_throughput.sh --duration 10 \
     --output results/throughput.csv
@@ -121,7 +121,7 @@ sudo ./scripts/bench_wg_revocation.sh --output results/wg_rev.csv      # Table 5
 
 Or all at once: `sudo ./scripts/eval_wg_all.sh --output-dir results/wg/`
 
-Our raw WireGuard results are in `proto/results/wg_baremetal_20260304_014941/`.
+Our raw WireGuard results are in `proto/results/wg_baremetal_<timestamp>/`.
 
 ## Summarizing results
 
