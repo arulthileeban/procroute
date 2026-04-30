@@ -60,13 +60,13 @@ sudo ./bin/procroute launch --app corp-browser \
     --policy policy/benchmark.yaml -- true
 ```
 
-**Pivot test** (~5 min, Table 5 / App A.2):
+**Pivot test** (~5 min, Table 7 / App A.2):
 ```bash
 sudo ./scripts/test_pivot_block.sh
 ```
 Should print 82/82 blocked.
 
-**Connect latency** (Table 4 / App A.1):
+**Connect latency** (Table 6 / App A.1):
 ```bash
 mkdir -p results
 for t in 1 2 3 4 5; do
@@ -85,19 +85,19 @@ sudo ./scripts/bench_throughput.sh --duration 10 \
 ```
 Results go to `results/throughput.csv`.
 
-**Policy scaling** (App A.3, Table 6):
+**Policy scaling** (Table 8 / App A.3):
 ```bash
 sudo ./scripts/bench_policy_scaling.sh
 ```
 Results go to `results/policy_scaling_*.csv`.
 
-**Update safety and revocation** (App A.4 Table 7, App A.6 Table 9):
+**Update safety and revocation** (Table 9 / App A.4, Table 11 / App A.6):
 ```bash
 sudo ./scripts/eval_baremetal.sh --skip-deps --skip-build
 ```
 Results go to `results/eval_<timestamp>/`. Should show 0 transient allows.
 
-**nftables comparison** (App A.5, Table 8):
+**nftables comparison** (Table 10 / App A.5):
 ```bash
 sudo ./scripts/bench_nftables_baseline.sh
 ```
@@ -112,16 +112,24 @@ sudo ./scripts/wg_ns.sh up
 
 Individual experiments:
 ```bash
-sudo ./scripts/bench_wg_throughput.sh --output results/wg_tp.csv       # Table 1
-sudo ./scripts/bench_wg_latency.sh --output results/wg_lat.csv         # Table 1
-sudo ./scripts/bench_wg_multistream.sh --output results/wg_ms.csv      # Table 2
-sudo ./scripts/bench_wg_policy_scaling.sh --output results/wg_sc.csv   # Table 3
-sudo ./scripts/bench_wg_revocation.sh --output results/wg_rev.csv      # Table 4
+sudo ./scripts/bench_wg_throughput.sh --output results/wg_tp.csv       # Table 2
+sudo ./scripts/bench_wg_latency.sh --output results/wg_lat.csv         # Table 2
+sudo ./scripts/bench_wg_multistream.sh --output results/wg_ms.csv      # Table 3
+sudo ./scripts/bench_wg_policy_scaling.sh --output results/wg_sc.csv   # Table 4
+sudo ./scripts/bench_wg_revocation.sh --output results/wg_rev.csv      # Table 5
 ```
 
 Or all at once: `sudo ./scripts/eval_wg_all.sh --output-dir results/wg/`
 
 Our raw WireGuard results are in `proto/results/wg_baremetal_20260304_014941/`.
+
+## Summarizing results
+
+After running the experiments, generate formatted tables matching the paper:
+```bash
+./scripts/summarize_results.sh
+```
+Use `--results-dir` and `--wg-dir` if CSVs are in non-default locations.
 
 ## Notes
 
