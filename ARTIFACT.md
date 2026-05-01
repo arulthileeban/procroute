@@ -47,15 +47,18 @@ sudo ./bin/procroute launch --app corp-browser \
 
 ## Reproducing the evaluation
 
-All commands from `proto/`. Restart the daemon with the benchmark
-policy (no `exec_hash` verification, so `iperf3`/`python3` are not
-rejected):
+All commands below run from `proto/`. Estimated total time: ~2 hours on
+a 2-CPU VM (individual estimates below).
+
+First, restart the daemon with the benchmark policy (no `exec_hash`
+verification, so `iperf3`/`python3` are not rejected):
 
 ```bash
 # stop any running daemon, then start with benchmark policy
 sudo pkill procroute; sleep 1
 sudo ./bin/procroute daemon --policy policy/benchmark.yaml \
     2>daemon.log | tee deny_events.jsonl &
+# register the corp-browser cgroup for benchmarks
 sudo ./bin/procroute launch --app corp-browser \
     --policy policy/benchmark.yaml -- true
 ```
@@ -66,7 +69,7 @@ sudo ./scripts/test_pivot_block.sh
 ```
 Should print 82/82 blocked.
 
-**Connect latency** (Table 6 / App A.1):
+**Connect latency** (~15 min, Table 6 / App A.1):
 ```bash
 mkdir -p results
 for t in 1 2 3 4 5; do
@@ -76,36 +79,36 @@ for t in 1 2 3 4 5; do
     sleep 2
 done
 ```
-Baseline p50 ~23 us, internal-allow ~26 us.
+Baseline p50 ~23 us, internal-allow ~26 us on bare metal;
+expect higher absolute values on a VM.
 
-**Throughput** (Table 1 / App A.1):
+**Throughput** (~2 min, Table 1 / App A.1):
 ```bash
 sudo ./scripts/bench_throughput.sh --duration 10 \
     --output results/throughput.csv
 ```
-Results go to `results/throughput.csv`.
 
-**Policy scaling** (Table 8 / App A.3):
+**Policy scaling** (~20 min, Table 8 / App A.3):
 ```bash
 sudo ./scripts/bench_policy_scaling.sh
 ```
 Results go to `results/policy_scaling_*.csv`.
 
-**Update safety and revocation** (Table 9 / App A.4, Table 11 / App A.6):
+**Update safety and revocation** (~30 min, Table 9 / App A.4, Table 11 / App A.6):
 ```bash
 sudo ./scripts/eval_baremetal.sh --skip-deps --skip-build
 ```
 Results go to `results/eval_<timestamp>/`. Should show 0 transient allows.
 
-**nftables comparison** (Table 10 / App A.5):
+**nftables comparison** (~10 min, Table 10 / App A.5):
 ```bash
 sudo ./scripts/bench_nftables_baseline.sh
 ```
 Results go to `results/nft_latency.csv` and `results/bpf_latency.csv`.
 
-### WireGuard (Sec. 6.3)
+### WireGuard (Sec. 6.3, ~30 min)
 
-Needs two machines or network namespaces:
+Set up the network-namespace testbed (single machine, no second VM needed):
 ```bash
 sudo ./scripts/wg_ns.sh up
 ```
@@ -121,7 +124,11 @@ sudo ./scripts/bench_wg_revocation.sh --output results/wg_rev.csv      # Table 5
 
 Or all at once: `sudo ./scripts/eval_wg_all.sh --output-dir results/wg/`
 
-Our raw WireGuard results are in `proto/results/wg_baremetal_<timestamp>/`.
+Teardown: `sudo ./scripts/wg_ns.sh down`
+
+The `wg_nftables` row in Tables 2--3 used a manual nftables cgroupv2
+socket-match configuration on the gateway; the raw data from our
+hardware run is in `proto/results/wg_baremetal_<timestamp>/`.
 
 ## Summarizing results
 
@@ -130,6 +137,9 @@ After running the experiments, generate formatted tables matching the paper:
 ./scripts/summarize_results.sh
 ```
 Use `--results-dir` and `--wg-dir` if CSVs are in non-default locations.
+Output is printed to stdout as ASCII tables. Table 1 (summary) and
+Table 7 (pivot matrix) are not computed -- Table 1 aggregates the
+others; Table 7 is deterministic (82/82 blocked).
 
 ## Notes
 

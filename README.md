@@ -8,7 +8,7 @@ Accepted at [SACMAT 2026](https://www.sacmat.org/2026/).
 ## Build
 
 ```bash
-sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3
+sudo apt-get install clang llvm libbpf-dev make golang iperf3 python3 nftables wireguard-tools
 cd proto && make
 ```
 

@@ -6,6 +6,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROTO_DIR="$(dirname "$SCRIPT_DIR")"
 RESULTS_DIR="${PROTO_DIR}/../results"
+RESULTS_DIR2="${PROTO_DIR}/results"
 WG_DIR=""
 
 while [[ $# -gt 0 ]]; do
@@ -17,12 +18,13 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -z "$WG_DIR" ]] && WG_DIR="$RESULTS_DIR"
 
-python3 - "$RESULTS_DIR" "$WG_DIR" <<'PYEOF'
+python3 - "$RESULTS_DIR" "$WG_DIR" "$RESULTS_DIR2" <<'PYEOF'
 import csv, glob, os, statistics, sys
 from collections import defaultdict
 
-R = sys.argv[1]  # results dir
-W = sys.argv[2]  # wg dir
+R = sys.argv[1]   # results dir (../results)
+W = sys.argv[2]   # wg dir
+R2 = sys.argv[3]  # results dir (proto/results)
 
 def load(name, *dirs):
     for d in dirs:
@@ -36,7 +38,7 @@ def f(v, d=1): return f"{v:.{d}f}"
 
 def banner(t): print(f"\n{'='*60}\n  {t}\n{'='*60}")
 
-dirs = [R, W, os.path.join(R, "../proto/results")]
+dirs = [R, W, R2, os.path.join(R, "../proto/results")]
 wg_subs = glob.glob(os.path.join(R, "wg_baremetal_*"))
 
 # --- Table 6: Connect latency (ns->us, median across trials) ---
