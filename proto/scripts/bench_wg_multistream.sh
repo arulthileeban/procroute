@@ -206,7 +206,39 @@ for STREAMS in $STREAM_COUNTS; do
             "ip netns exec ns_client iperf3 -c fd01:2::3 -p $IPERF_PORT -P $STREAMS -t $DURATION --json"
     done
 
-    # Config 2: wg_tag_only
+    # Config 2: wg_nftables
+    log "Config: wg_nftables, P=$STREAMS"
+    kill_bg
+
+    CLIENT_LOG="$LOGDIR/client_nft_${STREAMS}.log"
+    cd "$PROTO_DIR"
+    nsenter --net=/var/run/netns/ns_client "$BINARY" wg-client \
+        --policy "$POLICY" --iface wg0 \
+        >"$LOGDIR/client_nft_${STREAMS}.out" 2>"$CLIENT_LOG" &
+    CLIENT_PID=$!
+    PIDS_TO_KILL+=("$CLIENT_PID")
+    wait_ready "$CLIENT_LOG" "wg-client ready" || { log "ERROR: wg-client failed"; exit 1; }
+
+    ip netns exec ns_gateway nft -f - <<'NFTRULES'
+flush ruleset
+table ip6 procroute_wg_nft {
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related accept
+        ip6 daddr != fd01:2::/64 accept
+        iifname "wg0" ip6 flowlabel != 0 accept
+    }
+}
+NFTRULES
+
+    for trial in $(seq 1 "$TRIALS"); do
+        log "  trial $trial/$TRIALS"
+        run_iperf "wg_nftables" "$STREAMS" "$trial" \
+            "nsenter --net=/var/run/netns/ns_client $BINARY launch --app vpn-client --policy $POLICY -- iperf3 -c fd01:2::3 -p $IPERF_PORT -P $STREAMS -t $DURATION --json"
+    done
+    ip netns exec ns_gateway nft flush ruleset 2>/dev/null || true
+
+    # Config 3: wg_tag_only
     log "Config: wg_tag_only, P=$STREAMS"
     kill_bg
 
@@ -217,13 +249,7 @@ for STREAMS in $STREAM_COUNTS; do
         >"$LOGDIR/client_tag_${STREAMS}.out" 2>"$CLIENT_LOG" &
     CLIENT_PID=$!
     PIDS_TO_KILL+=("$CLIENT_PID")
-
-    if ! wait_ready "$CLIENT_LOG" "wg-client ready"; then
-        log "ERROR: wg-client did not become ready"
-        cat "$CLIENT_LOG" >&2
-        exit 1
-    fi
-    log "  wg-client ready (PID=$CLIENT_PID)"
+    wait_ready "$CLIENT_LOG" "wg-client ready" || { log "ERROR: wg-client failed"; exit 1; }
 
     for trial in $(seq 1 "$TRIALS"); do
         log "  trial $trial/$TRIALS"
@@ -231,7 +257,7 @@ for STREAMS in $STREAM_COUNTS; do
             "nsenter --net=/var/run/netns/ns_client $BINARY launch --app vpn-client --policy $POLICY -- iperf3 -c fd01:2::3 -p $IPERF_PORT -P $STREAMS -t $DURATION --json"
     done
 
-    # Config 3: wg_enforce_nocache
+    # Config 4: wg_enforce_nocache
     log "Config: wg_enforce_nocache, P=$STREAMS"
     kill_bg
 

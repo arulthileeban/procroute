@@ -199,7 +199,45 @@ for trial in $(seq 1 "$TRIALS"); do
         "ip netns exec ns_client iperf3 -c fd01:2::3 -p $IPERF_PORT -t $DURATION --json"
 done
 
-# Config 2: wg_tag_only
+# Config 2: wg_nftables (client tagger + nftables gateway enforcement)
+log "Config: wg_nftables (client tagger + nftables forward rules)"
+kill_bg
+
+# Start wg-client in ns_client
+CLIENT_LOG="$LOGDIR/client_nft.log"
+cd "$PROTO_DIR"
+nsenter --net=/var/run/netns/ns_client "$BINARY" wg-client \
+    --policy "$POLICY" --iface wg0 \
+    >"$LOGDIR/client_nft.out" 2>"$CLIENT_LOG" &
+CLIENT_PID=$!
+PIDS_TO_KILL+=("$CLIENT_PID")
+wait_ready "$CLIENT_LOG" "wg-client ready" || { log "ERROR: wg-client failed"; exit 1; }
+log "  wg-client ready (PID=$CLIENT_PID)"
+
+# Install nftables rules in ns_gateway (match flow label from client tags)
+ip netns exec ns_gateway nft -f - <<'NFTRULES'
+flush ruleset
+table ip6 procroute_wg_nft {
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related accept
+        ip6 daddr != fd01:2::/64 accept
+        iifname "wg0" ip6 flowlabel != 0 accept
+    }
+}
+NFTRULES
+log "  nftables gateway rules installed"
+
+for trial in $(seq 1 "$TRIALS"); do
+    log "  trial $trial/$TRIALS"
+    run_iperf "wg_nftables" "$trial" \
+        "nsenter --net=/var/run/netns/ns_client $BINARY launch --app vpn-client --policy $POLICY -- iperf3 -c fd01:2::3 -p $IPERF_PORT -t $DURATION --json"
+done
+
+# Cleanup nftables
+ip netns exec ns_gateway nft flush ruleset 2>/dev/null || true
+
+# Config 3: wg_tag_only
 log "Config: wg_tag_only (client tagger, no gateway)"
 kill_bg
 

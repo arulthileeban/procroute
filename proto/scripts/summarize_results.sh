@@ -101,7 +101,7 @@ if tp and lt:
     for r in tp: t_by[r["config"]].append(float(r["bits_per_second"]))
     l_by = {r["config"]: r for r in lt}
     print(f"{'Config':<22} {'Tput(Mbps)':>10} {'p50(us)':>8} {'p95(us)':>8} {'p99(us)':>8}")
-    for c in ["wg_baseline","wg_tag_only","wg_enforce_nocache","wg_enforce_cache"]:
+    for c in ["wg_baseline","wg_nftables","wg_tag_only","wg_enforce_nocache","wg_enforce_cache"]:
         if c not in t_by: continue
         l = l_by.get(c, {})
         print(f"{c:<22} {f(med(t_by[c])/1e6,0):>10} {f(float(l.get('p50_us',0))):>8} {f(float(l.get('p95_us',0))):>8} {f(float(l.get('p99_us',0))):>8}")
@@ -114,7 +114,7 @@ if ms:
     for r in ms: d[(r["config"], r["streams"])].append(float(r["bits_per_second"]))
     scs = sorted(set(s for _,s in d))
     print(f"{'Config':<22}" + "".join(f"{s+' streams':>14}" for s in scs))
-    for c in ["wg_baseline","wg_tag_only","wg_enforce_nocache","wg_enforce_cache"]:
+    for c in ["wg_baseline","wg_nftables","wg_tag_only","wg_enforce_nocache","wg_enforce_cache"]:
         vals = [f(med(d.get((c,s),[0]))/1e6,0) if d.get((c,s)) else "-" for s in scs]
         if any(v != "-" for v in vals):
             print(f"{c:<22}" + "".join(f"{v:>14}" for v in vals))
